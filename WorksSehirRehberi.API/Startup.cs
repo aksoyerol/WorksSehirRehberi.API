@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using WorksSehirRehberi.API.Data;
 
 namespace WorksSehirRehberi.API
 {
@@ -26,6 +27,8 @@ namespace WorksSehirRehberi.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddScoped<DataContext>();
+            services.AddScoped(typeof(IAppRepository<>), typeof(AppRepository<>));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,3 +48,4 @@ namespace WorksSehirRehberi.API
         }
     }
 }
+
