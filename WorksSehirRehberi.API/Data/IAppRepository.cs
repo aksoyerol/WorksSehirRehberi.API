@@ -3,20 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using WorksSehirRehberi.API.Models;
 
 namespace WorksSehirRehberi.API.Data
 {
-    public interface IAppRepository<T> : IDisposable where T:class
+    public interface IAppRepository : IDisposable 
     {
-        void Insert(T entity);
-        void Delete(T entity);
+        void Add<T>(T entity) where T : class;
+        void Delete<T>(T entity) where T : class;
         bool SaveAll();
 
-        List<T> GetList();
-        List<T> GetList(Expression<Func<T, bool>> filter);
-        List<T> GetByIdList(int id);
-        T GetItem(int id);
-        T GetItem(Expression<Func<T, bool>> filter);
-        IQueryable<T> Queryable();
+        List<City> GetCities();
+        List<Photo> GetPhotosByCity(int cityId);
+        City GetCityById(int cityId);
+        Photo GetPhoto(int id);
     }
 }

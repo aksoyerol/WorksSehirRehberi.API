@@ -4,69 +4,61 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using WorksSehirRehberi.API.Models;
 
 namespace WorksSehirRehberi.API.Data
 {
-    public class AppRepository<T> : IAppRepository<T> where T : class
+    public class AppRepository : IAppRepository
     {
-        private DataContext _db = new DataContext(new DbContextOptions<DataContext>());
-        private DbSet<T> _context;
+        private DataContext _context;
 
         public AppRepository(DataContext context)
         {
-            _context = _db.Set<T>();
+            _context = context;
         }
 
-
-        public void Dispose()
-        {
-            _db.Dispose();
-            GC.SuppressFinalize(this);
-        }
-
-        public void Insert(T entity)
+        public void Add<T>(T entity) where T : class
         {
             _context.Add(entity);
         }
 
-        public void Delete(T entity)
+        public void Delete<T>(T entity) where T : class
         {
             _context.Remove(entity);
         }
 
+        public List<City> GetCities()
+        {
+            var cities = _context.Cities.Include(c => c.Photos).ToList();
+            return cities;
+        }
+
+        public City GetCityById(int cityId)
+        {
+            var city = _context.Cities.Include(c => c.Photos).FirstOrDefault(c => c.Id == cityId);
+            return city;
+        }
+
+        public Photo GetPhoto(int id)
+        {
+            var photo = _context.Photos.FirstOrDefault(p => p.Id == id);
+            return photo;
+        }
+
+        public List<Photo> GetPhotosByCity(int cityId)
+        {
+            var photos = _context.Photos.Where(p => p.CityId == cityId).ToList();
+            return photos;
+        }
+
         public bool SaveAll()
         {
-            return _db.SaveChanges() > 0;
+            return _context.SaveChanges() > 0;
         }
 
-        public List<T> GetList()
+        public void Dispose()
         {
-            return _context.ToList();
-        }
-
-        public List<T> GetList(Expression<Func<T, bool>> filter)
-        {
-            return _context.Where(filter).ToList();
-        }
-
-        public List<T> GetByIdList(int id)
-        {
-            return _context.ToList();
-        }
-
-        public T GetItem(int id)
-        {
-            return _context.Find(id);
-        }
-
-        public T GetItem(Expression<Func<T, bool>> filter)
-        {
-            return _context.FirstOrDefault(filter);
-        }
-
-        public IQueryable<T> Queryable()
-        {
-            return _context.AsQueryable();
+            _context?.Dispose();
         }
     }
 }
