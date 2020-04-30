@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WorksSehirRehberi.API.Data;
+using WorksSehirRehberi.API.Dtos;
 using WorksSehirRehberi.API.Models;
 
 namespace WorksSehirRehberi.API.Controllers
@@ -19,7 +20,11 @@ namespace WorksSehirRehberi.API.Controllers
 
         public ActionResult GetCities()
         {
-            var cities = rep.Queryable().Include(x => x.Photos).ToList();
+            /*DTO*/
+            
+            //var cities = rep.Queryable().Include(x => x.Photos)
+            //    .Select(x=> new CityForListDto{Description = x.Description, Name = x.Name,Id = x.Id}).ToList();
+            var cities = rep.GetList();
             return Ok(cities);
         }
 
